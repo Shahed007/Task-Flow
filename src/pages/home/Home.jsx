@@ -1,11 +1,5 @@
- const Home = () => {
- return (
- <div>
-Home
- </div>
- )
-}
- 
-export default Home
- 
- 
+const Home = () => {
+  return <main className="h-screen">Home</main>;
+};
+
+export default Home;
