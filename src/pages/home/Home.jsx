@@ -1,5 +1,11 @@
+import Hero from "./Hero";
+
 const Home = () => {
-  return <main className="h-screen">Home</main>;
+  return (
+    <main>
+      <Hero></Hero>
+    </main>
+  );
 };
 
 export default Home;

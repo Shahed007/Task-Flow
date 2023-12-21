@@ -1,9 +1,9 @@
 import { Typography } from "@material-tailwind/react";
-import Container from "../../../components/container/Container";
+import Container from "../../components/container/Container";
 import { Link } from "react-router-dom";
 import { FaLinkedin, FaGithubSquare, FaFacebookSquare } from "react-icons/fa";
 
-export function SimpleFooter() {
+export default function SimpleFooter() {
   return (
     <footer className="border-t border-blue-gray-50  bg-gradient-to-tr from-secondary to-primary">
       <Container>

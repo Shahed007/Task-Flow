@@ -7,9 +7,9 @@ import {
   IconButton,
 } from "@material-tailwind/react";
 import { Link, NavLink } from "react-router-dom";
-import Container from "../../../components/container/Container";
+import Container from "../../components/container/Container";
 
-export function StickyNavbar() {
+export default function StickyNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
 
   React.useEffect(() => {
@@ -70,12 +70,14 @@ export function StickyNavbar() {
           <div className="flex items-center gap-4">
             <div className="mr-4 hidden lg:block">{navList}</div>
             <div className="flex items-center gap-x-1">
-              <Button
-                size="md"
-                className="hidden lg:inline-block bg-primary active:scale-95"
-              >
-                <span>Log In</span>
-              </Button>
+              <Link to="/logIn">
+                <Button
+                  size="md"
+                  className="hidden lg:inline-block bg-primary active:scale-95"
+                >
+                  <span>Log In</span>
+                </Button>
+              </Link>
             </div>
             <IconButton
               variant="text"
@@ -119,9 +121,11 @@ export function StickyNavbar() {
         <MobileNav open={openNav}>
           {navList}
           <div>
-            <Button fullWidth variant="gradient" size="md" className="">
-              <span>Log In</span>
-            </Button>
+            <Link to="/logIn">
+              <Button fullWidth variant="gradient" size="md" className="">
+                <span>Log In</span>
+              </Button>
+            </Link>
           </div>
         </MobileNav>
       </Navbar>

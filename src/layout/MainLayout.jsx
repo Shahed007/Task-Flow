@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import { StickyNavbar } from "../pages/home/shared/Navbar";
-import { SimpleFooter } from "../pages/home/shared/Footer";
+import StickyNavbar from "../pages/shared/Navbar";
+import SimpleFooter from "../pages/shared/Footer";
 
 const MainLayout = () => {
   return (
