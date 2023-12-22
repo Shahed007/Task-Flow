@@ -21,7 +21,7 @@ import useAuth from "../../hooks/useAuth";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { QueryClient, useQuery } from "@tanstack/react-query";
-import { AiOutlineDrag } from "react-icons/ai";
+import {IoIosArrowDown} from "react-icons/io"
 
 const uri = "http://localhost:5000";
 
@@ -66,6 +66,19 @@ const Task = ({ task, onTaskMove, refetch }) => {
     }
   };
 
+  const handleDelete = async () => {
+    const res = await axios.delete(`${uri}/task/${task._id}`);
+
+    try {
+      if (res.data.deletedCount) {
+        toast.success("Task deleted successfully");
+        refetch();
+      }
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+
   return (
     <>
       <div
@@ -107,7 +120,7 @@ const Task = ({ task, onTaskMove, refetch }) => {
                   ""
                 )}
               </div>
-              <AiOutlineDrag className="text-3xl group-hover:block hidden duration-500 " />
+              <IoIosArrowDown /> 
             </div>
           </AccordionHeader>
           <AccordionBody className="pt-0 text-base font-normal">
@@ -121,9 +134,14 @@ const Task = ({ task, onTaskMove, refetch }) => {
                   ""
                 )}
               </p>
-              <Button onClick={handleOpenUpdate} className="bg-primary">
-                Edit
-              </Button>
+              <div className="flex items-center gap-4">
+                <Button onClick={handleOpenUpdate} className="bg-primary">
+                  Edit
+                </Button>
+                <Button onClick={handleDelete} className="bg-red-800">
+                  Delete
+                </Button>
+              </div>
             </div>
           </AccordionBody>
         </Accordion>
@@ -183,7 +201,7 @@ const Column = ({ title, tasks, status, onTaskMove, refetch }) => {
 
   return (
     <div
-      className="smt-5 border border-gray-400 shadow-sm rounded-md"
+      className="smt-5 border min-h-32 border-gray-400 shadow-sm rounded-md"
       ref={drop}
     >
       <div>
@@ -290,7 +308,7 @@ const Dashboard = () => {
   };
   return (
     <>
-      <section className="mt-12 h-screen">
+      <section className="my-12 md:h-screen h-full">
         <Container>
           <div className="mb-12">
             <Button onClick={handleOpen} className="bg-secondary" size="lg">
