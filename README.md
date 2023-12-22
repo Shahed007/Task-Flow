@@ -1,8 +1,25 @@
-# React + Vite
+# TaskFlow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🔗 Links
+Live webiste link :
+[TaskFlow](https://task-flow-72ec3.web.app)
 
-Currently, two official plugins are available:
+Server site link: [TaskFlow-server](https://github.com/Shahed007/Task-Flow-server)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Installation
+
+
+```bash
+ in cmd
+ git clone https://github.com/Shahed007/Task-Flow-server
+ npm install 
+ npm run dev
+```
+
+## This project base on Task management system
+## 3 Features of my project
+
+- This website site have drag and drop functionality user can drag and drop task one columen to other columen.
+- This website have board page this will be show all tasks in table formate
+- This website have firebase authentication user can't access task dashboard and task board page without login. this website fully responsive mobile, desktop and tablet.
