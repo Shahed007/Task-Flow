@@ -5,12 +5,16 @@ import {
   Typography,
   Button,
   IconButton,
+  Avatar,
 } from "@material-tailwind/react";
 import { Link, NavLink } from "react-router-dom";
 import Container from "../../components/container/Container";
+import useAuth from "../../hooks/useAuth";
 
 export default function StickyNavbar() {
+  const { user } = useAuth();
   const [openNav, setOpenNav] = React.useState(false);
+  console.log(user);
 
   React.useEffect(() => {
     window.addEventListener(
@@ -70,14 +74,21 @@ export default function StickyNavbar() {
           <div className="flex items-center gap-4">
             <div className="mr-4 hidden lg:block">{navList}</div>
             <div className="flex items-center gap-x-1">
-              <Link to="/logIn">
-                <Button
-                  size="md"
-                  className="hidden lg:inline-block bg-primary active:scale-95"
-                >
-                  <span>Log In</span>
-                </Button>
-              </Link>
+              {user ? (
+                <div className="sm:flex hidden items-center gap-6">
+                  <Avatar src={user.photoURL} alt="avatar" />
+                  <Button className="bg-primary">LogOut</Button>
+                </div>
+              ) : (
+                <Link to="/logIn">
+                  <Button
+                    size="md"
+                    className="hidden lg:inline-block bg-primary active:scale-95"
+                  >
+                    <span>Log In</span>
+                  </Button>
+                </Link>
+              )}
             </div>
             <IconButton
               variant="text"
@@ -121,11 +132,18 @@ export default function StickyNavbar() {
         <MobileNav open={openNav}>
           {navList}
           <div>
-            <Link to="/logIn">
-              <Button fullWidth variant="gradient" size="md" className="">
-                <span>Log In</span>
-              </Button>
-            </Link>
+            {user ? (
+              <div className="flex gap-2 items-center">
+                <Avatar src={user.photoURL} alt="avatar" />
+                <Button className="bg-primary">LogOut</Button>
+              </div>
+            ) : (
+              <Link to="/logIn">
+                <Button fullWidth variant="gradient" size="md" className="">
+                  <span>Log In</span>
+                </Button>
+              </Link>
+            )}
           </div>
         </MobileNav>
       </Navbar>
