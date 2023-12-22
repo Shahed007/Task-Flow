@@ -7,14 +7,15 @@ import {
   IconButton,
   Avatar,
 } from "@material-tailwind/react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import Container from "../../components/container/Container";
 import useAuth from "../../hooks/useAuth";
+import toast from "react-hot-toast";
 
 export default function StickyNavbar() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [openNav, setOpenNav] = React.useState(false);
-  console.log(user);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     window.addEventListener(
@@ -22,6 +23,13 @@ export default function StickyNavbar() {
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
+
+  const handleLogOut = () => {
+    logout().then(() => {
+      toast.success("Logout successful");
+      navigate("/");
+    });
+  };
 
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
@@ -76,7 +84,9 @@ export default function StickyNavbar() {
             <div className="flex items-center gap-x-1">
               {user ? (
                 <div className="sm:flex hidden items-center gap-6">
-                  <Button className="bg-primary">LogOut</Button>
+                  <Button onClick={handleLogOut} className="bg-primary">
+                    LogOut
+                  </Button>
                 </div>
               ) : (
                 <Link to="/logIn">
@@ -133,7 +143,7 @@ export default function StickyNavbar() {
           <div>
             {user ? (
               <div className="sm:hidden flex gap-2 items-center">
-                <Button className="bg-primary">LogOut</Button>
+                <Button onClick={handleLogOut} className="bg-primary">LogOut</Button>
               </div>
             ) : (
               <Link to="/logIn">

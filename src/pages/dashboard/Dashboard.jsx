@@ -24,7 +24,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { useQuery } from "@tanstack/react-query";
 import { IoIosArrowDown } from "react-icons/io";
 
-const uri = "http://localhost:5000";
+const uri = "https://taskflow-server-v1.vercel.app";
 
 const Task = ({ task, onTaskMove, refetch }) => {
   const [open, setOpen] = useState(false);

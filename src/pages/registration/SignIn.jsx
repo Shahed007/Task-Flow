@@ -25,7 +25,7 @@ export default function SimpleRegistrationForm() {
       .then(() => {
         profileUpdate(name, image).then(() => {
           toast.success("SignUp successful");
-          location.state ? navigate(location.state) : navigate("/")
+          navigate("/task-dashboard");
         });
       })
       .catch((error) => {
@@ -33,12 +33,12 @@ export default function SimpleRegistrationForm() {
       });
   };
 
-  const handleGoogleSignUp = ()=> {
-    google().then(()=> {
-      toast.success('SignUp Successful')
-      location.state ? navigate(location.state) : navigate("/")
-    })
-  }
+  const handleGoogleSignUp = () => {
+    google().then(() => {
+      toast.success("SignUp Successful");
+      navigate("/task-dashboard");
+    });
+  };
   return (
     <section className="h-screen my-5">
       <Card
@@ -52,7 +52,7 @@ export default function SimpleRegistrationForm() {
         <Typography color="gray" className="mt-1 font-normal">
           Nice to meet you! Enter your details to register.
         </Typography>
-        <form onSubmit={handleSignUp} className="mt-8 mb-2   ">
+        <form onSubmit={handleSignUp} className="mt-8 mb-2  py-3 ">
           <div className="mb-1 flex flex-col gap-6">
             <Typography variant="h6" color="blue-gray" className="-mb-3">
               Your Name
@@ -115,7 +115,7 @@ export default function SimpleRegistrationForm() {
           </Button>
           <Typography color="gray" className="mt-4 text-center font-normal">
             Already have an account?{" "}
-            <Link to="/login" className="font-medium text-gray-900">
+            <Link to="/logIn" className="font-medium text-gray-900">
               Login
             </Link>
           </Typography>
@@ -123,7 +123,9 @@ export default function SimpleRegistrationForm() {
         <div className="flex flex-col gap-6 justify-center align-center">
           <p className="text-center">Or SignUp with</p>
           <div className="flex justify-center">
-            <Button onClick={handleGoogleSignUp} size="lg">Google</Button>
+            <Button onClick={handleGoogleSignUp} size="lg">
+              Google
+            </Button>
           </div>
         </div>
       </Card>

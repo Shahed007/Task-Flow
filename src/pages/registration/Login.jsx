@@ -17,7 +17,7 @@ const Login = () => {
     loginUser(email, password)
       .then(() => {
         toast.success("Login Successful");
-        location.state ? navigate(location.state) : navigate("/");
+        navigate("/task-dashboard");
       })
       .catch((error) => {
         toast.error(error.message);
@@ -27,13 +27,13 @@ const Login = () => {
   const handleGoogleSignUp = () => {
     google().then(() => {
       toast.success("SignUp Successful");
-      location.state ? navigate(location.state) : navigate("/");
+      navigate("/task-dashboard");
     });
   };
   return (
     <section className="h-screen my-5 ">
       <Card
-        className="max-w-xl bg-secondary/20  mx-auto  px-4"
+        className="max-w-xl bg-secondary/20  mx-auto  px-4 py-3"
         color="transparent"
         shadow={false}
       >
@@ -77,8 +77,8 @@ const Login = () => {
           </Button>
           <Typography color="gray" className="mt-4 text-center font-normal">
             New here create account?{" "}
-            <Link to="/signIn" className="font-medium text-gray-900">
-              SignIn
+            <Link to="/signUp" className="font-medium text-gray-900">
+              SignUp
             </Link>
           </Typography>
         </form>
