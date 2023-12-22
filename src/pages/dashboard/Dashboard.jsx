@@ -23,6 +23,7 @@ import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useQuery } from "@tanstack/react-query";
 import { IoIosArrowDown } from "react-icons/io";
+import { useForm } from "react-hook-form";
 
 const uri = "https://taskflow-server-v1.vercel.app";
 
@@ -230,6 +231,7 @@ const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [select, setSelect] = useState("Low");
   const [taskLoading, setTaskLoading] = useState(false);
+  const { register, handleSubmit, setValue } = useForm();
 
   const {
     data: tasks,
@@ -277,20 +279,18 @@ const Dashboard = () => {
 
   const handleOpen = () => setOpen(!open);
 
-  const handleAddTask = async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const title = form.title.value;
-    const date = form.date.value;
-    const description = form.description.value;
+  const handleAddTask = async (date) => {
+    // console.log(date);
+    // const form = e.target;
+    // const title = form.title.value;
+    // const date = form.date.value;
+    // const description = form.description.value;
 
     setTaskLoading(true);
 
     try {
       const res = await axios.post(`${uri}/task`, {
-        title,
-        date,
-        description,
+        ...date,
         priority: select,
         email: user?.email,
         status: "todo",
@@ -361,21 +361,27 @@ const Dashboard = () => {
         }}
       >
         <DialogHeader>Create your new Task</DialogHeader>
-        <form onSubmit={handleAddTask}>
+        <form onSubmit={handleSubmit(handleAddTask)}>
           <DialogBody className="flex flex-col gap-6">
-            <Input required name="title" label="Title" />
+            <Input {...register("title")} required name="title" label="Title" />
             <input
+              {...register("date")}
               className="py-1 rounded-md px-1 border border-gray-700"
               type="date"
               name="date"
               required
             ></input>
-            <Select name="priority" label="Select Version">
+            <Select name="priority" label="Select priority">
               <Option onClick={() => setSelect("Low")}>Low</Option>
               <Option onClick={() => setSelect("Moderate")}>Moderate</Option>
               <Option onClick={() => setSelect("High")}>High</Option>
             </Select>
-            <Textarea required name="description" label="Description" />
+            <Textarea
+              {...register("description")}
+              required
+              name="description"
+              label="Description"
+            />
 
             <Button
               loading={taskLoading}
