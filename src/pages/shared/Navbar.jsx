@@ -76,7 +76,6 @@ export default function StickyNavbar() {
             <div className="flex items-center gap-x-1">
               {user ? (
                 <div className="sm:flex hidden items-center gap-6">
-                  <Avatar src={user.photoURL} alt="avatar" />
                   <Button className="bg-primary">LogOut</Button>
                 </div>
               ) : (
@@ -133,8 +132,7 @@ export default function StickyNavbar() {
           {navList}
           <div>
             {user ? (
-              <div className="flex gap-2 items-center">
-                <Avatar src={user.photoURL} alt="avatar" />
+              <div className="sm:hidden flex gap-2 items-center">
                 <Button className="bg-primary">LogOut</Button>
               </div>
             ) : (

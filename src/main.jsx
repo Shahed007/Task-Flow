@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import Login from "./pages/registration/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import TaskBoard from "./pages/taskBoard/TaskBoard";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "/task-dashboard",
         element: <Dashboard></Dashboard>,
+      },
+      {
+        path: "/task-board",
+        element: <TaskBoard></TaskBoard>,
       },
     ],
   },

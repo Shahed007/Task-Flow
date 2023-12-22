@@ -2,6 +2,7 @@ import {
   Accordion,
   AccordionBody,
   AccordionHeader,
+  Avatar,
   Button,
   Dialog,
   DialogBody,
@@ -20,13 +21,12 @@ import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { QueryClient, useQuery } from "@tanstack/react-query";
-import {IoIosArrowDown} from "react-icons/io"
+import { useQuery } from "@tanstack/react-query";
+import { IoIosArrowDown } from "react-icons/io";
 
 const uri = "http://localhost:5000";
 
 const Task = ({ task, onTaskMove, refetch }) => {
-  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(!open);
   const [openUpdate, setOpenUpdate] = useState(false);
@@ -120,7 +120,7 @@ const Task = ({ task, onTaskMove, refetch }) => {
                   ""
                 )}
               </div>
-              <IoIosArrowDown /> 
+              <IoIosArrowDown />
             </div>
           </AccordionHeader>
           <AccordionBody className="pt-0 text-base font-normal">
@@ -310,10 +310,17 @@ const Dashboard = () => {
     <>
       <section className="my-12 md:h-screen h-full">
         <Container>
-          <div className="mb-12">
+          <div className="mb-12 flex sm:flex-row flex-col gap-6 justify-between items-center">
             <Button onClick={handleOpen} className="bg-secondary" size="lg">
               New Task
             </Button>
+            <div className="flex flex-col   justify-center items-center">
+              <Avatar src={user?.photoURL} alt="avatar" className="h-20 w-20" />
+              <h1 className="text-2xl font-semibold mt-2">
+                {user?.displayName}
+              </h1>
+              <p className="text-lg font-semibold mt-2">{user?.email}</p>
+            </div>
           </div>
 
           <DndProvider backend={HTML5Backend}>
