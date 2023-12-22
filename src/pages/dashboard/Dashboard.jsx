@@ -1,11 +1,7 @@
-// import React from "react";
-// import { useQuery, useQueryClient } from "@tanstack/react-query";
-// import axios from "axios";
-// import { Link } from "react-router-dom";
-// import { DndProvider, useDrag, useDrop } from "react-dnd";
-// import { HTML5Backend } from "react-dnd-html5-backend";
-
 import {
+  Accordion,
+  AccordionBody,
+  AccordionHeader,
   Button,
   Dialog,
   DialogBody,
@@ -18,15 +14,25 @@ import {
   Textarea,
 } from "@material-tailwind/react";
 import Container from "../../components/container/Container";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery } from "@tanstack/react-query";
+import { AiOutlineDrag } from "react-icons/ai";
 
-const Task = ({ task, onTaskMove }) => {
+const uri = "http://localhost:5000";
+
+const Task = ({ task, onTaskMove, refetch }) => {
+  const { user } = useAuth();
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(!open);
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [select, setSelect] = useState("Low");
+  const handleOpenUpdate = () => setOpenUpdate(!openUpdate);
+
   const [{ isDragging }, drag] = useDrag({
     type: "TASK",
     item: { id: task._id, status: task.status },
@@ -35,17 +41,135 @@ const Task = ({ task, onTaskMove }) => {
     }),
   });
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    const from = e.target;
+    const title = from.title.value;
+    const description = from.description.value;
+    const date = from.date.value;
+
+    try {
+      const res = await axios.put(`${uri}/task/${task._id}`, {
+        title,
+        date,
+        description,
+        priority: select,
+      });
+      if (res.data.modifiedCount) {
+        refetch();
+        toast.success("Task updated successfully");
+        setOpenUpdate(false);
+      }
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+
   return (
-    <div
-      ref={drag}
-      className={`bg-slate-200 ${isDragging ? "opacity-50" : ""}`}
-    >
-      <p className="text-xl font-semibold mt-2 p-3">{task.title}</p>
-    </div>
+    <>
+      <div
+        ref={drag}
+        className={`bg-slate-200 my-2 ${isDragging ? "bg-primary" : ""}`}
+      >
+        <Accordion
+          open={open}
+          className="mb-2 rounded-lg border border-blue-gray-100 px-4 group "
+        >
+          <AccordionHeader
+            onClick={() => handleOpen()}
+            className={`border-b-0 transition-colors ${
+              open === 1 ? "text-blue-500 hover:!text-blue-700" : ""
+            }`}
+          >
+            <div className="flex items-center justify-between  w-full h-full gap-2">
+              <div className="flex justify-between items-center w-full">
+                {task.title}{" "}
+                {task.status === "todo" ? (
+                  <span className="uppercase text-sm text-purple-400">
+                    {task.status}
+                  </span>
+                ) : (
+                  ""
+                )}
+                {task.status === "ongoing" ? (
+                  <span className="uppercase text-sm text-teal-300">
+                    {task.status}
+                  </span>
+                ) : (
+                  ""
+                )}
+                {task.status === "completed" ? (
+                  <span className="uppercase text-sm text-green-500">
+                    {task.status}
+                  </span>
+                ) : (
+                  ""
+                )}
+              </div>
+              <AiOutlineDrag className="text-3xl group-hover:block hidden duration-500 " />
+            </div>
+          </AccordionHeader>
+          <AccordionBody className="pt-0 text-base font-normal">
+            <p>{task.description}</p>
+            <div className="mt-3 bg-gray-300 px-2 py-1 rounded-md flex justify-between items-center">
+              <p>
+                Priority:{" "}
+                {task.priority ? (
+                  <span className="text-sm">{task.priority}</span>
+                ) : (
+                  ""
+                )}
+              </p>
+              <Button onClick={handleOpenUpdate} className="bg-primary">
+                Edit
+              </Button>
+            </div>
+          </AccordionBody>
+        </Accordion>
+      </div>
+      <Dialog open={openUpdate} handler={handleOpenUpdate}>
+        <DialogHeader>Update your task</DialogHeader>
+        <form onSubmit={handleUpdate}>
+          <DialogBody className="flex flex-col gap-4">
+            <Input defaultValue={task.title} name="title" label="Title" />
+            <input
+              defaultValue={task.data}
+              className="py-1 rounded-md px-1 border border-gray-700"
+              type="date"
+              name="date"
+            ></input>
+            <Select name="priority" label={task.priority}>
+              <Option onClick={() => setSelect("Low")}>Low</Option>
+              <Option onClick={() => setSelect("Moderate")}>Moderate</Option>
+              <Option onClick={() => setSelect("High")}>High</Option>
+            </Select>
+            <Textarea
+              defaultValue={task.description}
+              name="description"
+              label="Description"
+            />
+            <Button type="submit" size="md" className="bg-primary">
+              Update Task
+            </Button>
+          </DialogBody>
+        </form>
+        <DialogFooter>
+          <Button
+            variant="text"
+            color="red"
+            onClick={handleOpenUpdate}
+            className="mr-1"
+          >
+            <span>Cancel</span>
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </>
   );
 };
 
-const Column = ({ title, tasks, status, onTaskMove }) => {
+const Column = ({ title, tasks, status, onTaskMove, refetch }) => {
   const [{ canDrop, isOver }, drop] = useDrop({
     accept: "TASK",
     drop: (item) => onTaskMove(item.id, item.status, status),
@@ -72,7 +196,12 @@ const Column = ({ title, tasks, status, onTaskMove }) => {
         </h1>
       </div>
       {tasks.map((task) => (
-        <Task key={task._id} task={task} onTaskMove={onTaskMove} />
+        <Task
+          key={task._id}
+          task={task}
+          onTaskMove={onTaskMove}
+          refetch={refetch}
+        />
       ))}
     </div>
   );
@@ -83,7 +212,6 @@ const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [select, setSelect] = useState("Low");
   const [taskLoading, setTaskLoading] = useState(false);
-  const uri = "http://localhost:5000";
 
   const {
     data: tasks,
@@ -122,15 +250,12 @@ const Dashboard = () => {
 
       if (res.data.modifiedCount) {
         toast.success(`Task status updated successfully`);
-
         refetch();
       }
     } catch (err) {
       toast.error(err.message);
     }
   };
-
-  console.log(tasks);
 
   const handleOpen = () => setOpen(!open);
 
@@ -156,6 +281,7 @@ const Dashboard = () => {
         toast.success("Task added successfully");
         setTaskLoading(false);
         setOpen(false);
+        refetch();
       }
     } catch (err) {
       toast.error(err.message);
@@ -164,7 +290,7 @@ const Dashboard = () => {
   };
   return (
     <>
-      <section className="my-12">
+      <section className="mt-12 h-screen">
         <Container>
           <div className="mb-12">
             <Button onClick={handleOpen} className="bg-secondary" size="lg">
@@ -176,18 +302,21 @@ const Dashboard = () => {
             <div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <Column
+                  refetch={refetch}
                   title="To Do"
                   tasks={tasks.filter((task) => task.status === "todo")}
                   status="todo"
                   onTaskMove={handleTaskMove}
                 />
                 <Column
+                  refetch={refetch}
                   title="Ongoing"
                   tasks={tasks.filter((task) => task.status === "ongoing")}
                   status="ongoing"
                   onTaskMove={handleTaskMove}
                 />
                 <Column
+                  refetch={refetch}
                   title="Completed"
                   tasks={tasks.filter((task) => task.status === "completed")}
                   status="completed"
